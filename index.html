@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Rpi PiFace</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="piface_ws.js"></script>
+  </head>
+ 
+<body>
+
+	<header>
+		<h1>PiFace</h1>
+		<h2>I/O Interface for Raspberry Pi</h2>
+	</header>
+
+	<div id="con_div">
+	  <label for="host">Host :</label>
+	  <input type="text" id="host" value="192.168.0.26" />
+	  <input type="button" id="connect" value="connect" onclick='connect()' />
+	</div>
+
+
+  <div id="input">
+    <h2>Input</h2>
+    <div id="in_0" class="input_bt">0<div id="in_0_state">--</div></div>
+    <div id="in_1" class="input_bt">1<div id="in_1_state">--</div></div>
+    <div id="in_2" class="input_bt">2<div id="in_2_state">--</div></div>
+    <div id="in_3" class="input_bt">3<div id="in_3_state">--</div></div>
+    <div id="in_4" class="input_bt">4<div id="in_4_state">--</div></div>
+    <div id="in_5" class="input_bt">5<div id="in_5_state">--</div></div>
+    <div id="in_6" class="input_bt">6<div id="in_6_state">--</div></div>
+    <div id="in_7" class="input_bt">7<div id="in_7_state">--</div></div>
+  </div>
+
+  <div id="output">
+    <h2>Output</h2>
+    <div id="out_0" class="output_bt" onclick="ws.send('0')">0<div id="out_0_state">--</div></div>
+    <div id="out_1" class="output_bt" onclick="ws.send('1')">1<div id="out_1_state">--</div></div>
+    <div id="out_2" class="output_bt" onclick="ws.send('2')">2<div id="out_2_state">--</div></div>
+    <div id="out_3" class="output_bt" onclick="ws.send('3')">3<div id="out_3_state">--</div></div>
+    <div id="out_4" class="output_bt" onclick="ws.send('4')">4<div id="out_4_state">--</div></div>
+    <div id="out_5" class="output_bt" onclick="ws.send('5')">5<div id="out_5_state">--</div></div>
+    <div id="out_6" class="output_bt" onclick="ws.send('6')">6<div id="out_6_state">--</div></div>
+    <div id="out_7" class="output_bt" onclick="ws.send('7')">7<div id="out_7_state">--</div></div>
+  </div>
+
+</body>
+</html>
+
