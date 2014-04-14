@@ -14,8 +14,10 @@ import tornado.web
 import datetime
 import json
 
-import piface.pfio as pfio
+# import piface.pfio as pfio
+import pifacedigitalio as pfio
 pfio.init()
+pifacedigital = pfio.PiFaceDigital()
 
 last_data = None
 
@@ -42,8 +44,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def timeout_loop(self):
 		# read PiFace input/output state
 		global last_data
-		r_input = '{0:08b}'.format(pfio.read_input())
-		r_output = '{0:08b}'.format(pfio.read_output())
+		r_input = '{0:08b}'.format(pifacedigital.input_port.value)
+		r_output = '{0:08b}'.format(pifacedigital.output_port.value)
 
 		data = {"in": [], "out": []}
 
@@ -67,7 +69,7 @@ application = tornado.web.Application([
 if __name__ == "__main__":
 	http_server = tornado.httpserver.HTTPServer(application)
 	http_server.listen(8888)
-	print 'Raspberry Pi - PiFace'
-	print 'WebSocket Server start ..'
+	print("Raspberry Pi - PiFace")
+	print("WebSocket Server start ..")
 	tornado.ioloop.IOLoop.instance().start()
 
