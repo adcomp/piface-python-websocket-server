@@ -1,28 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Rpi PiFace</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="style.css">
-
-    <script src="http://code.jquery.com/jquery.min.js"></script>
-    <script src="piface_ws.js"></script>
+    <title>PiFace Remote WebSocket</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="author" content="David Art [aka] adcomp" >
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { text-align: center; }
+      header { font-family: sans-serif, monospace; vertical-align: middle; background: #000; background: linear-gradient(#222, #000) repeat scroll 0% 0% transparent; border-bottom: 4px solid #bd1143; padding: 8px; margin-bottom: 16px; }
+      header h1 { color: white; font-size: 32px; margin: 0; }
+      header h2 { font-size: 18px; color: #444; }
+      .piface { margin-bottom: 42px; }
+      #pi_logo { vertical-align: middle;}
+      #input, #output { display: none; padding: 4px; }
+      .input_bt, .output_bt { display: inline-block; width: 64px; height: 64px; border: 3px solid black; border-radius: 4px; background: #333; color: #999; font-family: sans-serif, monospace; font-size: 12px; margin: 4px;}
+      .input_bt div, .output_bt div { font-size: 26px; margin-top: 6px; }
+      #host { background: #bd1143;  border: 3px solid black; border-radius: 4px; padding: 4px; color: white; font-size: 18px; font-family: monospace; }
+      .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 0 16px;; height: 30px; line-height: 2em; color: #ccc; background: #000; background: linear-gradient(#222, #000) repeat scroll 0% 0% transparent; border-top: 2px solid #262626; text-align: right; font-size: 0.8em; z-index: 100; }
+      a { color: #999; text-decoration: none; border: 0px none; }
+      a:hover { text-decoration: underline; }
+      @media only screen and (max-width: 640px) {
+      .input_bt, .output_bt { width: 48px; height: 48px; border: 1px solid black; border-radius: 4px; background: #333; color: #999; font-family: sans-serif, monospace; font-size: 12px; }
+      }
+      @media only screen and (max-width: 320px) {
+      .input_bt, .output_bt { width: 64px; height: 64px; border: 1px solid black; border-radius: 4px; background: #333; color: #999; font-family: sans-serif, monospace; font-size: 12px; }
+      }
+      @media only screen and (min-width: 900px) {
+      .input_bt, .output_bt { width: 92px; height: 92px; border: 4px solid black; border-radius: 4px; background: #333; color: #999; font-family: sans-serif, monospace; font-size: 12px; }
+      }
+    </style>
   </head>
- 
 <body>
-
-	<header>
-		<h1>PiFace</h1>
-		<h2>I/O Interface for Raspberry Pi</h2>
-	</header>
-
-	<div id="con_div">
-	  <label for="host">Host :</label>
-	  <input type="text" id="host" value="192.168.10.10" />
-	  <input type="button" id="connect" value="connect" onclick='connect()' />
-	</div>
-
-
+  <header>
+    <h1>PiFace</h1>
+    <h2>I/O Interface for Raspberry Pi</h2>
+  </header>
+  <div id="con_div">
+    <label for="host">Host :</label>
+    <input type="text" id="host" value="192.168.0.3" />
+    <input type="button" id="connect" value="connect" onclick='connect()' />
+  </div>
+  <div class="piface">
   <div id="input">
     <h2>Input</h2>
     <div id="in_0" class="input_bt">0<div id="in_0_state">--</div></div>
@@ -34,7 +53,6 @@
     <div id="in_6" class="input_bt">6<div id="in_6_state">--</div></div>
     <div id="in_7" class="input_bt">7<div id="in_7_state">--</div></div>
   </div>
-
   <div id="output">
     <h2>Output</h2>
     <div id="out_0" class="output_bt" onclick="ws.send('0')">0<div id="out_0_state">--</div></div>
@@ -46,6 +64,64 @@
     <div id="out_6" class="output_bt" onclick="ws.send('6')">6<div id="out_6_state">--</div></div>
     <div id="out_7" class="output_bt" onclick="ws.send('7')">7<div id="out_7_state">--</div></div>
   </div>
+  </div><!-- piface -->
+<footer class="footer"><a href="#">adcomp</a></footer>
+<script>
+var ws = null;
+
+function connect() {
+  var host = document.getElementById('host').value;
+  ws = new WebSocket("ws://" + host + ":8888/piface");
+
+  ws.onmessage = function(evt) {
+    // console.log(evt.data);
+    var piface = JSON.parse(evt.data);
+    update(piface);
+  };
+
+  ws.onclose = function(evt) {
+    console.log("Connection close ..");
+    document.getElementById('host').style["background"] = "#bd1143";
+    document.getElementById('input').style["display"] = 'none';
+    document.getElementById('output').style["display"] = 'none';
+    document.getElementById("connect").style.visibility = "visible";
+  };
+
+  ws.onopen = function(evt) {
+    console.log("WebSocket open ..")
+    document.getElementById('host').style["background"] = "#7eb52b";
+    document.getElementById("connect").style.visibility = "hidden";
+    document.getElementById('input').style["display"] = 'block';
+    document.getElementById('output').style["display"] = 'block';
+  };
+}
+
+function update(piface) {
+
+  for (var i=0; i<8; i++) {
+
+    // input
+    if (piface['in'][i] == '0') {
+      document.getElementById('in_' + i).style["background"] = "#333";
+      document.getElementById('in_' + i+ '_state').innerHTML = "Off";
+    }
+    else {
+      document.getElementById('in_' + i).style["background"] = "#159";
+      document.getElementById('in_' + i+ '_state').innerHTML = "On";
+    }
+
+    // output
+    if (piface['out'][i] == '0') {
+      document.getElementById('out_' + i).style["background"] = "#333";
+      document.getElementById('out_' + i+ '_state').innerHTML = "Off";
+    }
+    else {
+      document.getElementById('out_' + i).style["background"] = "#bd1143";
+      document.getElementById('out_' + i+ '_state').innerHTML = "On";
+    }
+  }
+}
+</script>
 
 </body>
 </html>
