@@ -34,6 +34,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     self.clients.append(self)
     self.timeout_loop()
 
+  """ Tornado 4.0 introduced an, on by default, same origin check.
+  This checks that the origin header set by the browser is the same as the host header """
+  def check_origin(self, origin):
+    return True
+
   def on_message(self, message):
     # message is the PIN number you want to toggle
     pin = int(message)
