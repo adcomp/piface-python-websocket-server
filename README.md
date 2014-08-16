@@ -1,19 +1,25 @@
 piface-python-websocket-server
 ==============================
+- Hardware Prerequisites:
+  * PiFace: http://www.piface.org.uk/
 
-- PiFace : http://www.piface.org.uk/
+- Software Prerequisites:
+-  Tornado:
+  * $> sudo apt-get install python-tornado 
+-  JSON:
+  * $> sudo apt-get install python-simplejson
 
-- Quick "howto" :
-
-  _ Tornado :
-  * $> sudo apt-get install python-tornado
-
-  _ PiFace server
+- PiFace server:
   * $> git clone https://github.com/adcomp/piface-python-websocket-server.git
   * $> cd piface-python-websocket-server
   * $> python server.py
 
-  _ Browser : http//[your_raspberrypi_IP]:8888
+- Browser: 
+  * http//[your_raspberrypi_IP]:8888
 
-- Video :
-  https://www.youtube.com/watch?v=eJpGfqwGr08
+- Video:
+  * https://www.youtube.com/watch?v=eJpGfqwGr08
+
+- References:
+  * http://www.piface.org.uk/guides/Install_PiFace_Software/
+  * https://piface.github.io/pifacedigitalio/
