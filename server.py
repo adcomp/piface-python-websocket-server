@@ -30,12 +30,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
   def open(self):
     self.connected = True
-    print('new connection')
+    print("new connection")
     self.clients.append(self)
     self.timeout_loop()
 
-  """ Tornado 4.0 introduced an, on by default, same origin check.
-  This checks that the origin header set by the browser is the same as the host header """
+  # """ Tornado 4.0 introduced an, on by default, same origin check.
+  # This checks that the origin header set by the browser is the same as the host header """
   def check_origin(self, origin):
     return True
 
@@ -52,7 +52,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
   def on_close(self):
     self.connected = False
-    print('connection closed')
+    print("connection closed")
     self.clients.remove(self)
 
   def timeout_loop(self):
